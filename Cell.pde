@@ -5,6 +5,7 @@ class Cell {
   int r,g,b;
   int toggled;
 
+
   Cell(int x, int y, int wid, int high, int roja, int verde, int azul, int initToggled) {
     x_loc = x;
     y_loc = y;

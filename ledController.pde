@@ -63,47 +63,6 @@ void keyPressed()
   
 }
 
-
-//void storeColor() {
-//  for (int i = 0; i < cols; i++) {
-//    for (int j = 0; j < rows; j++) {
-//      formerR[j] = grid[i][j].r;
-//      formerG[j] = grid[i][j].g;
-//      formerB[j] = grid[i][j].b;
-//      grid[i][j].r = 200;
-//      grid[i][j].g = 150;
-//      grid[i][j].b = 245;
-//    }
-//    
-//    checkTime = millis();
-//    while (checkTime + 100 > currentTime)
-//    {
-//      for (int j = 0; j < rows; j++) 
-//      {
-//        grid[i][j].display();       
-//      }
-//      currentTime = millis();
-//    }
-//    
-//    for (int j = 0; j < rows; j++) {
-//        grid[i][j].r = formerR[j];
-//        grid[i][j].g = formerG[j];
-//        grid[i][j].b = formerB[j];
-//    }
-//    
-//    checkTime = millis();
-//    while (checkTime + 100 > currentTime)
-//    {
-//      for (int j = 0; j < rows; j++) 
-//      {
-//        grid[i][j].display();       
-//      }
-//      currentTime = millis();
-//    }
-//    
-//  }
-//}
-
 class CycleThread extends Thread {
   
   boolean running;           // Is the thread running?  Yes or no?

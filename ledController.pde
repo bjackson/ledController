@@ -1,9 +1,11 @@
-import processing.serial.*;
-import java.awt.TextField;
+ import processing.serial.*;
+ import java.awt.TextField;
 
+  Serial arduino;
   int rows = 16;
   int cols = 16;
   public static Cell[][] grid;
+  public static int[] gridArray;
   int toggledX;
   int toggledY;
   int checkTime;
@@ -11,6 +13,7 @@ import java.awt.TextField;
   int placeholder;
 
 void setup() {
+  arduino = new Serial(this, "/dev/tty.441", 115200);
   size(608,608);
   grid = new Cell[rows][cols];
   for (int i = 0; i < cols; i++) {
@@ -25,7 +28,23 @@ void setup() {
 }
 
 void draw() {
-
+  
+  //Serial Transmission Routine
+  int arrayPosition = 0;
+  int[] gridArray = new int[16*16*3];
+  for (int i = 0; i < cols; i++)
+  {
+    for (int j = 0; j < rows; j++)
+    {
+      gridArray[arrayPosition] = byte(grid[i][j].r);
+      arrayPosition++;
+      gridArray[arrayPosition] = byte(grid[i][j].g);
+      arrayPosition++;
+      gridArray[arrayPosition] = byte(grid[i][j].b);
+      arrayPosition++;
+    }
+  }
+  arduino.write(gridArray);
   
 }
 

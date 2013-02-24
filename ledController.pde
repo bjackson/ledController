@@ -25,8 +25,7 @@ void setup() {
 }
 
 void draw() {
-  //thread("storeColor");
-  
+
   
 }
 
@@ -37,13 +36,31 @@ void mousePressed() {
     grid[toggledX][toggledY].r = 255;
     grid[toggledX][toggledY].g = 255;
     grid[toggledX][toggledY].b = 255;
+    grid[toggledX][toggledY].display();
   } else {
     grid[toggledX][toggledY].r = 0;
     grid[toggledX][toggledY].g = 0;
     grid[toggledX][toggledY].b = 0;
+    grid[toggledX][toggledY].display();
     
   }
-  print(grid);
+  println(toggledX + ", " + toggledY);
+}
+
+void keyPressed()
+{
+  if (key == 32)
+  {
+    for (int i = 0; i < cols; i++) {
+      for (int j = 0; j < rows; j++) {
+        grid[i][j].r = 0;
+        grid[i][j].g = 0;
+        grid[i][j].b = 0;
+        grid[i][j].display();
+      }
+    }
+  }
+  
 }
 
 
@@ -129,11 +146,11 @@ class CycleThread extends Thread {
         formerR[j] = grid[i][j].r;
         formerG[j] = grid[i][j].g;
         formerB[j] = grid[i][j].b;
-        if (grid[i][j].r != 255)
+        if (grid[i][j].r == 0)
         {
-          grid[i][j].r = 200;
-          grid[i][j].g = 150;
-          grid[i][j].b = 245;
+          grid[i][j].r = 97;
+          grid[i][j].g = 195;
+          grid[i][j].b = 237;
         
           grid[i][j].display();
         }

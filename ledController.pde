@@ -58,9 +58,7 @@ void keyPressed()
   {
     for (int i = 0; i < cols; i++) {
       for (int j = 0; j < rows; j++) {
-        grid[i][j].r = 0;
-        grid[i][j].g = 0;
-        grid[i][j].b = 0;
+        grid[i][j].toggled = 0;
         grid[i][j].display();
       }
     }

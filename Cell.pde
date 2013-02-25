@@ -5,9 +5,10 @@ class Cell {
   int r,g,b;
   int toggled;
   int onCycle;
+  SoundCipher sc;
 
 
-  Cell(int x, int y, int wid, int high, int roja, int verde, int azul, int initToggled) {
+  Cell(int x, int y, int wid, int high, int roja, int verde, int azul, int initToggled, SoundCipher cs) {
     x_loc = x;
     y_loc = y;
     w = wid;
@@ -15,7 +16,8 @@ class Cell {
     r = roja;
     g = verde;
     b = azul;
-    toggled = initToggled; 
+    toggled = initToggled;
+    sc = cs;
   }
   
   void display() {
@@ -30,6 +32,11 @@ class Cell {
         r = 97;
         g = 195;
         b = 237;
+     } else if (this.toggled == 1 && onCycle == 1)
+     {
+        r = 255;
+        g = 255;
+        b = 255;
      } else if (this.toggled == 0)
      {
         r = 0;

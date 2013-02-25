@@ -3,6 +3,7 @@
  import arb.soundcipher.*;
 
   public static Serial arduino;
+  public static SoundCipher sc;
   int rows = 16;
   int cols = 16;
   public static Cell[][] grid;
@@ -21,15 +22,16 @@ void setup() {
   for (int i = 0; i < cols; i++) {
     for (int j = 0; j < rows; j++) {
       // Initialize each object
-      grid[i][j] = new Cell(i*38,j*38,38,38,0,0,0,0);
+      grid[i][j] = new Cell(i*38,j*38,38,38,0,0,0,0, sc);
       grid[i][j].display();
     }
   }
-  CycleThread cycle = new CycleThread(100, "cycle", grid);
+  sc.instrument(sc.BELL);
+  CycleThread cycle = new CycleThread(100, "cycle", grid, sc);
   TransmitThread transmit = new TransmitThread(10, "transmit", grid);
   cycle.start();
   transmit.start();
-  //sc.playNote(60, 100, );
+  sc.playNote(60, 100, 1);
 }
 
 void draw() {
@@ -68,6 +70,7 @@ void keyPressed()
 
 class CycleThread extends Thread {
   
+  
   boolean running;           // Is the thread running?  Yes or no?
   int wait;                  // How many milliseconds should we wait in between executions?
   String id;                 // Thread name
@@ -76,11 +79,13 @@ class CycleThread extends Thread {
   int[] formerR = new int[16];
   int[] formerG = new int[16];
   int[] formerB = new int[16];
+  SoundCipher sc;
+  
   
  
   // Constructor, create the thread
   // It is not running by default
-  CycleThread (int w, String s, ledController.Cell[][] theGrid) {
+  CycleThread (int w, String s, ledController.Cell[][] theGrid, SoundCipher cs) {
     wait = w;
     running = false;
     id = s;
@@ -89,6 +94,7 @@ class CycleThread extends Thread {
     int[] formerR = new int[16];
     int[] formerG = new int[16];
     int[] formerB = new int[16];
+    sc = cs;
   }
   
   // Overriding "start()"
@@ -107,6 +113,10 @@ class CycleThread extends Thread {
       for (int j = 0; j < rows; j++) {
         grid[i][j].onCycle = 1;
         grid[i][j].display();
+        if (grid[i][j].toggled == 1)
+        {
+          sc.playNote(map(grid[i][j].y_loc/38, 1, 16, 55, 80), 100, .5);
+        }
         }
     
       // Ok, let's wait for however long we should wait

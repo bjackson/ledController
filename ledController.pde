@@ -1,5 +1,6 @@
  import processing.serial.*;
  import java.awt.TextField;
+ import arb.soundcipher.*;
 
   public static Serial arduino;
   int rows = 16;
@@ -14,6 +15,7 @@
 
 void setup() {
   arduino = new Serial(this, "/dev/tty.usbmodem641", 115200);
+  SoundCipher sc = new SoundCipher(this);
   size(608,608);
   grid = new Cell[rows][cols];
   for (int i = 0; i < cols; i++) {
@@ -27,6 +29,7 @@ void setup() {
   TransmitThread transmit = new TransmitThread(10, "transmit", grid);
   cycle.start();
   transmit.start();
+  //sc.playNote(60, 100, );
 }
 
 void draw() {
@@ -38,15 +41,11 @@ void draw() {
 void mousePressed() {
   toggledX = round(mouseX/38);
   toggledY = round(mouseY/38);
-  if (grid[toggledX][toggledY].r == 0) {
-    grid[toggledX][toggledY].r = 255;
-    grid[toggledX][toggledY].g = 255;
-    grid[toggledX][toggledY].b = 255;
+  if (grid[toggledX][toggledY].toggled == 0) {
+    grid[toggledX][toggledY].toggled = 1;
     grid[toggledX][toggledY].display();
   } else {
-    grid[toggledX][toggledY].r = 0;
-    grid[toggledX][toggledY].g = 0;
-    grid[toggledX][toggledY].b = 0;
+    grid[toggledX][toggledY].toggled = 0;
     grid[toggledX][toggledY].display();
     
   }
@@ -108,17 +107,8 @@ class CycleThread extends Thread {
     while (running) {
     for (int i = 0; i < cols; i++) {
       for (int j = 0; j < rows; j++) {
-        formerR[j] = grid[i][j].r;
-        formerG[j] = grid[i][j].g;
-        formerB[j] = grid[i][j].b;
-        if (grid[i][j].r == 0)
-        {
-          grid[i][j].r = 97;
-          grid[i][j].g = 195;
-          grid[i][j].b = 237;
-        
-          grid[i][j].display();
-        }
+        grid[i][j].onCycle = 1;
+        grid[i][j].display();
         }
     
       // Ok, let's wait for however long we should wait
@@ -126,12 +116,12 @@ class CycleThread extends Thread {
         sleep((long)(wait));
       } catch (Exception e) {
       }
-        for (int j = 0; j < rows; j++) {
-          grid[i][j].r = formerR[j];
-          grid[i][j].g = formerG[j];
-          grid[i][j].b = formerB[j];
+       for (int j = 0; j < rows; j++) 
+       {
+          grid[i][j].onCycle = 0;
           grid[i][j].display();
-    }
+       }
+      
     }
     }
     System.out.println(id + " thread is done!");  // The thread is done when we get to the end of run()
@@ -188,7 +178,7 @@ class TransmitThread extends Thread {
       }
     }
 
-    arduino.write(gridArray);
+    //arduino.write(gridArray);
     
       // Ok, let's wait for however long we should wait
       try {

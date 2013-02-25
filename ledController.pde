@@ -23,29 +23,15 @@ void setup() {
       grid[i][j].display();
     }
   }
-  CycleThread thread1 = new CycleThread(100, "cat", grid);
-  thread1.start();
+  CycleThread cycle = new CycleThread(100, "cycle", grid);
+  TransmitThread transmit = new TransmitThread(10, "transmit", grid);
+  cycle.start();
+  transmit.start();
 }
 
 void draw() {
   
-  //Serial Transmission Routine
-  int arrayPosition = 0;
-  byte[] gridArray = new byte[16*16*3];
-  for (int i = 0; i < cols; i++)
-  {
-    for (int j = 0; j < rows; j++)
-    {
-      gridArray[arrayPosition] = byte(grid[i][j].r);
-      arrayPosition++;
-      gridArray[arrayPosition] = byte(grid[i][j].g);
-      arrayPosition++;
-      gridArray[arrayPosition] = byte(grid[i][j].b);
-      arrayPosition++;
-    }
-  }
 
-    arduino.write(gridArray);
   
 }
 
@@ -154,6 +140,69 @@ class CycleThread extends Thread {
   
 }
     
+class TransmitThread extends Thread {
+  
+  boolean running;           // Is the thread running?  Yes or no?
+  int wait;                  // How many milliseconds should we wait in between executions?
+  String id;                 // Thread name
+  int count;                 // counter
+  byte[] gridArray;          // grid of cells
+  
+ 
+  // Constructor, create the thread
+  // It is not running by default
+  TransmitThread (int w, String s, ledController.Cell[][] theGrid) {
+    wait = w;
+    running = false;
+    id = s;
+    count = 0;
+    grid = theGrid;
+  }
+  
+  // Overriding "start()"
+  void start () {
+    // Set running equal to true
+    running = true;
+    // Print messages
+    // Do whatever start does in Thread, don't forget this!
+    super.start();
+  }
+  
+     // We must implement run, this gets triggered by start()
+  void run () {
+    while (running) {
+
+    //Serial Transmission Routine
+    int arrayPosition = 0;
+    byte[] gridArray = new byte[16*16*3];
+    for (int i = 0; i < cols; i++)
+    {
+      for (int j = 0; j < rows; j++)
+      {
+        gridArray[arrayPosition] = byte(grid[i][j].r);
+        arrayPosition++;
+        gridArray[arrayPosition] = byte(grid[i][j].g);
+        arrayPosition++;
+        gridArray[arrayPosition] = byte(grid[i][j].b);
+        arrayPosition++;
+      }
+    }
+
+    arduino.write(gridArray);
+    
+      // Ok, let's wait for however long we should wait
+      try {
+        sleep((long)(wait));
+      } catch (Exception e) {
+      }
+
+    
+    }
+    System.out.println(id + " thread is done!");  // The thread is done when we get to the end of run()
+  }
+  
+  
+}
 
 
 
